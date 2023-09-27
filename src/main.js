@@ -17,9 +17,7 @@ function Main() {
     // const [videoSrc, setVideoSrc] = useState('');
     const [videoFileValue, setVideoFileValue] = useRecoilState(videoFileState);
     const [isPlayerVisible, setPlayerVisible] = useRecoilState(playerVisibleState);
-    var isValidYouTubeUrl = (url) => {
-        return (url.match(p)) ? RegExp.$1 : false;
-    }
+
     const handleClick = async() => {
         setVideoSrc('');
         console.log(videourl)
