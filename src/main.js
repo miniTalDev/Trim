@@ -17,17 +17,18 @@ function Main() {
     // const [videoSrc, setVideoSrc] = useState('');
     const [videoFileValue, setVideoFileValue] = useRecoilState(videoFileState);
     const [isPlayerVisible, setPlayerVisible] = useRecoilState(playerVisibleState);
-    const validate = (url) => {
-
+    var isValidYouTubeUrl = (url) => {
+        return (url.match(p)) ? RegExp.$1 : false;
     }
     const handleClick = async() => {
         setVideoSrc('');
         console.log(videourl)
+        const  p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=)?)([\w\-]{10,12}).+$/;
         if (videourl === '') {
             alert('Input field is empty');
         } else {
             // Handle the url
-            if (videourl.includes("youtube")) {
+            if (videourl.match(p)) {
                 await axios.get(`https://api.waitwhatsong.com/download-youtube-video?url=${videourl}`)
                     .then(response => {
 

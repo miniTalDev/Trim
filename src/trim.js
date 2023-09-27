@@ -5,7 +5,7 @@ import 'nouislider/distribute/nouislider.css';
 import Upload from './components/upload';
 import Logo from './components/logo';
 import axios from 'axios';
-// import { saveAs } from 'file-saver';
+import { saveAs } from 'file-saver';
 import { videoSrcState, videoFileState, playerVisibleState } from './recoil_state';
 import './App.css';
 
