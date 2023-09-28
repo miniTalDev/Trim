@@ -9,7 +9,7 @@ import Nouislider from 'nouislider-react';
 import 'nouislider/distribute/nouislider.css';
 import axios from 'axios';
 import { Player } from "video-react";
-import { videoSrcState,videoFileState,playerVisibleState } from './recoil_state';
+import { videoSrcState, videoFileState, playerVisibleState } from './recoil_state';
 
 function Main() {
     const [videourl, setVideoURL] = useState('');
@@ -18,10 +18,10 @@ function Main() {
     const [videoFileValue, setVideoFileValue] = useRecoilState(videoFileState);
     const [isPlayerVisible, setPlayerVisible] = useRecoilState(playerVisibleState);
 
-    const handleClick = async() => {
+    const handleClick = async () => {
         setVideoSrc('');
         console.log(videourl)
-        const  p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=)?)([\w\-]{10,12}).+$/;
+        const p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=)?)([\w\-]{10,12}).+$/;
         if (videourl === '') {
             alert('Input field is empty');
         } else {
@@ -109,9 +109,23 @@ function Main() {
                 <div>
                     <p className='text-white text-center font-roboto text-4xl font-bold p-4 pt-24'>Discover the Song Behind Your Favorite Videos</p>
                 </div>
-                <p className='text-white text-center font-roboto text-base font-medium leading-normal p-4 pt-[39px]'>Unveil the Mystery - Input a Video Link and Find Out the Song Title!</p>
+                <p className='text-white text-center font-roboto text-base font-medium leading-normal p-4 pt-[39px]'>Unveil the Mystery - Input an Youtube Link and Find Out the Song Title!</p>
                 <div className="flex md:flex-row flex-col gap-[18px] pt-[39px] justify-center">
-                    <input value={videourl} onChange={(e) => setVideoURL(e.target.value)} className="md:w-[647px] w-5/6 h-[53px] self-center pl-12 bg-white rounded-md border border-gray-300 " type="text" placeholder='Paste your video link here' />
+                    <div className="flex md:w-[647px] w-5/6 self-center">
+                        <input
+                            value={videourl}
+                            onChange={(e) => setVideoURL(e.target.value)}
+                            className="flex-grow h-[53px] pl-12 bg-white rounded-l-md border border-gray-300 "
+                            type="text"
+                            placeholder='Paste your video link here'
+                        />
+                        <button
+                            onClick={() => setVideoURL('')}
+                            className=" bg-white bg-opacity-30 text-white px-4 py-2 rounded-r-md border border-gray-300"
+                        >
+                            Clear
+                        </button>
+                    </div>
                     <button className='w-[150px] inline-flex p-4 space-x-3 self-center items-center bg-white bg-opacity-30 rounded-lg' onClick={handleClick}>
                         <Logo width={17} height={18} fill={"white"} />
                         <p className='text-white text-center font-roboto text-base font-medium leading-5'>Find Music</p>

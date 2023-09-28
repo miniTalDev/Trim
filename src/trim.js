@@ -246,9 +246,11 @@ function Trim() {
                 <input id="file-upload" type="file" accept="video/*" style={{ display: 'none' }} onChange={handleFileUpload} />
             </button>
             )}
-            <br />
+            
             {videoSrc.length ? (
                 <div className='flex-col'>
+                    <p className='text-white text-center font-roboto text-base font-medium leading-normal p-4 pb-10'>Please select up to 15 seconds of the video so we can identify it for you!</p>
+                
                     <div className='flex flex-col items-center'>
                         <video className='md:w-[640px] w-5/6' src={videoSrc} ref={videoRef} onTimeUpdate={handlePauseVideo}>
                             <source src={videoSrc} type={videoFileValue.type} />
@@ -258,8 +260,8 @@ function Trim() {
                             className='md:w-[640px] w-5/6'
                             behaviour="tap-drag"
                             step={1}
-                            margin={3}
-                            limit={1000}
+                            margin={5}
+                            limit={15}
                             range={{ min: 0, max: videoDuration || 2 }}
                             start={[0, videoDuration || 2]}
                             connect
