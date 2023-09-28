@@ -303,11 +303,11 @@ function Trim() {
                     </div>
                     {resultVisible && (
                         <div className='flex flex-col gap-8 md:w-[640px] w-5/6 mt-10'>
-                            <p className='font-roboto text-xl  text-white leading-21 tracking-normal pl-5 md:pl-0'>Results:</p>
-                            <div className='flex flex-col md:flex-row gap-5 md:gap-28 pl-5 md:pl-0'>
+                            <p className='font-roboto text-xl  text-white leading-21 tracking-normal pl-8 md:pl-0'>Results:</p>
+                            <div className='flex flex-col md:flex-row gap-5 md:gap-28 pl-8 md:pl-0'>
                                 <div className='flex flex-row md:flex-col gap-8 md:gap-2'>
                                     <div className='w-[124px]'>
-                                        <img className='w-[124px] h-[124px] rounded-md' src={result.image}></img>
+                                        <img className='w-[124px]  rounded-md' src={result.image}></img>
                                         <p className='font-roboto text-lg leading-21 font-medium text-white tracking-normal text-center'>{result.title}</p>
                                     </div>
                                     <div className='md:w-[124px]'>
@@ -318,7 +318,7 @@ function Trim() {
                                 </div>
                                 <div className='flex-col'>
                                     <p className='font-roboto text-xl leading-21  text-white tracking-normal text-start'>Lyrics</p>
-                                    <div className='h-[400px] mt-3 overflow-y-auto whitespace-pre-wrap'>
+                                    <div className='h-[400px] mt-7 overflow-y-auto whitespace-pre-wrap'>
                                         <p className='font-roboto text-lg leading-21  text-white tracking-normal text-start'>{result.lyrics}</p>
                                     </div>
                                     <br />
