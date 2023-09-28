@@ -189,20 +189,20 @@ function Trim() {
             await ffmpeg.run("-i", `out.${videoFileType}`, "-q:a", "0", "-map", "a", "out.mp3");
 
             //Convert data to url and store in videoTrimmedUrl state
-            const data = ffmpeg.FS('readFile', `out.${videoFileType}`);
+            // const data = ffmpeg.FS('readFile', `out.${videoFileType}`);
 
             const audio = ffmpeg.FS("readFile", "out.mp3");
 
-            const url = URL.createObjectURL(
-                new Blob([data.buffer], { type: videoFileValue.type }),
-            );
+            // const url = URL.createObjectURL(
+            //     new Blob([data.buffer], { type: videoFileValue.type }),
+            // );
 
             const blobUrl = URL.createObjectURL(
                 new Blob([audio.buffer], { type: "audio/mpeg" })
             );
 
             // saveAs(new Blob([audio.buffer], { type: "audio/mpeg" }), `trimmed_audio.wav`);
-            setVideoTrimmedUrl(url);
+            // setVideoTrimmedUrl(url);
             setaudioTrimmedUrl(blobUrl)
 
 
@@ -246,30 +246,31 @@ function Trim() {
             <br />
             {videoSrc.length ? (
                 <div className='flex-col'>
-                    <div>
-                        <video className='md:w-[640px] sm:w-full' src={videoSrc} ref={videoRef} onTimeUpdate={handlePauseVideo}>
+                    <div className=' flex-col md:w-[640px] w-5/6 items-center' >
+                        <video src={videoSrc} ref={videoRef} onTimeUpdate={handlePauseVideo}>
                             <source src={videoSrc} type={videoFileValue.type} />
                         </video>
+                        <br />
+                        <Nouislider
+                            behaviour="tap-drag"
+                            step={1}
+                            margin={3}
+                            limit={1000}
+                            range={{ min: 0, max: videoDuration || 2 }}
+                            start={[0, videoDuration || 2]}
+                            connect
+                            onUpdate={updateOnSliderChange}
+                        />
+
+                        <p className='text-white text-center font-roboto text-base font-medium leading-normal pt-3'>
+                            Start duration: {convertToHHMMSS(startTime)} &nbsp; End duration:{' '}
+                            {convertToHHMMSS(endTime)}
+                        </p>
                     </div>
-                    <br />
-                    <Nouislider
-                        behaviour="tap-drag"
-                        step={1}
-                        margin={3}
-                        limit={1000}
-                        range={{ min: 0, max: videoDuration || 2 }}
-                        start={[0, videoDuration || 2]}
-                        connect
-                        onUpdate={updateOnSliderChange}
-                    />
 
-                    <p className='text-white text-center font-roboto text-base font-medium leading-normal pt-3'>
-                        Start duration: {convertToHHMMSS(startTime)} &nbsp; End duration:{' '}
-                        {convertToHHMMSS(endTime)}
-                    </p>
 
                     <br />
-                    <div className='flex justify-end space-x-3'>
+                    <div className='flex justify-end space-x-3 mr-2'>
 
                         <button className='flex p-4 items-center space-x-3 bg-white bg-opacity-30 rounded-lg' onClick={handlePlay}>
                             <Logo width={17} height={18} fill={"white"} />
@@ -284,14 +285,14 @@ function Trim() {
 
                     </div>
                     <br />
-                    {videoTrimmedUrl && (
+                    {/* {videoTrimmedUrl && (
                         <video className='md:w-[640px] sm:w-full' controls>
                             <source src={videoTrimmedUrl} type={videoFileValue.type} />
                         </video>
-                    )}
+                    )} */}
                     <br />
                     {audioTrimmedUrl && (
-                        <audio className='md:w-[640px] sm:w-full' controls>
+                        <audio className='md:w-[640px] w-5/6' controls>
                             <source src={audioTrimmedUrl} type="audio/mpeg" />
                         </audio>
                     )}
