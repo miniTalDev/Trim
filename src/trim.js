@@ -246,12 +246,13 @@ function Trim() {
             <br />
             {videoSrc.length ? (
                 <div className='flex-col'>
-                    <div className=' flex-col md:w-[640px] w-5/6 items-center' >
-                        <video src={videoSrc} ref={videoRef} onTimeUpdate={handlePauseVideo}>
+                    <div className='flex flex-col items-center'>
+                        <video className='md:w-[640px] w-5/6' src={videoSrc} ref={videoRef} onTimeUpdate={handlePauseVideo}>
                             <source src={videoSrc} type={videoFileValue.type} />
                         </video>
                         <br />
                         <Nouislider
+                            className='md:w-[640px] w-5/6'
                             behaviour="tap-drag"
                             step={1}
                             margin={3}
@@ -270,7 +271,7 @@ function Trim() {
 
 
                     <br />
-                    <div className='flex justify-end space-x-3 mr-2'>
+                    <div className='flex justify-end space-x-3 mr-8'>
 
                         <button className='flex p-4 items-center space-x-3 bg-white bg-opacity-30 rounded-lg' onClick={handlePlay}>
                             <Logo width={17} height={18} fill={"white"} />
@@ -291,25 +292,31 @@ function Trim() {
                         </video>
                     )} */}
                     <br />
-                    {audioTrimmedUrl && (
-                        <audio className='md:w-[640px] w-5/6' controls>
-                            <source src={audioTrimmedUrl} type="audio/mpeg" />
-                        </audio>
-                    )}
+                    <div className='flex flex-col items-center'>
+
+                        {audioTrimmedUrl && (
+                            <audio className='md:w-[640px] w-5/6' controls>
+                                <source src={audioTrimmedUrl} type="audio/mpeg" />
+                            </audio>
+
+                        )}
+                    </div>
                     {resultVisible && (
-                        <div className='flex flex-col gap-8 mt-10'>
+                        <div className='flex flex-col gap-8 md:w-[640px] w-5/6 mt-10'>
                             <p className='font-roboto text-xl  text-white leading-21 tracking-normal pl-5 md:pl-0'>Results:</p>
                             <div className='flex flex-col md:flex-row gap-5 md:gap-28 pl-5 md:pl-0'>
-                                <div className='flex-col w-[124px] '>
-                                    <img className='w-[124px] h-[124px] rounded-md' src={result.image}></img>
-                                    <br />
-                                    <p className='font-roboto text-lg leading-21 font-medium text-white tracking-normal text-center'>{result.title}</p>
-                                    <p className='font-roboto text-xs leading-21  text-white tracking-normal text-start'>Artist: {result.artist}</p>
-                                    <p className='font-roboto text-xs leading-21  text-white tracking-normal text-start'>Album: {result.album}</p>
-                                    <p className='font-roboto text-xs leading-21  text-white tracking-normal text-start'>Song_link: <a href={result.song_link}><u>{result.song_link}</u></a></p>
-
+                                <div className='flex flex-row md:flex-col gap-8 md:gap-2'>
+                                    <div className='w-[124px]'>
+                                        <img className='w-[124px] h-[124px] rounded-md' src={result.image}></img>
+                                        <p className='font-roboto text-lg leading-21 font-medium text-white tracking-normal text-center'>{result.title}</p>
+                                    </div>
+                                    <div className='md:w-[124px]'>
+                                        <p className='font-roboto text-base md:text-xs leading-21  text-white tracking-normal text-start'>Artist: {result.artist}</p>
+                                        <p className='font-roboto text-base md:text-xs leading-21  text-white tracking-normal text-start'>Album: {result.album}</p>
+                                        <p className='font-roboto text-base md:text-xs leading-21  text-white tracking-normal text-start'>Song_link: <a href={result.song_link}><u>{result.song_link}</u></a></p>
+                                    </div>
                                 </div>
-                                <div className='flex-col w-[400px]'>
+                                <div className='flex-col'>
                                     <p className='font-roboto text-xl leading-21  text-white tracking-normal text-start'>Lyrics</p>
                                     <div className='h-[400px] mt-3 overflow-y-auto whitespace-pre-wrap'>
                                         <p className='font-roboto text-lg leading-21  text-white tracking-normal text-start'>{result.lyrics}</p>
