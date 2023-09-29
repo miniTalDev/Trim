@@ -115,7 +115,7 @@ function Main() {
                         <input
                             value={videourl}
                             onChange={(e) => setVideoURL(e.target.value)}
-                            className="flex-grow h-[53px] pl-12 bg-white rounded-l-md border border-gray-300 "
+                            className="flex-grow h-[53px] pl-4 md:pl-12 bg-white rounded-l-md border border-gray-300 "
                             type="text"
                             placeholder='Paste your video link here'
                         />
