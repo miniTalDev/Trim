@@ -116,7 +116,7 @@ function Trim() {
     useEffect(() => {
         //Load the ffmpeg script
         loadScript(
-            'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.4/dist/ffmpeg.min.js',
+            'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js',
         ).then(() => {
             if (typeof window !== 'undefined') {
                 // creates a ffmpeg instance.
