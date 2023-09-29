@@ -5,10 +5,12 @@ import 'nouislider/distribute/nouislider.css';
 import Upload from './components/upload';
 import Logo from './components/logo';
 import axios from 'axios';
+import Icon from './components/icon';
 import { saveAs } from 'file-saver';
 import { videoSrcState, videoFileState, playerVisibleState, startLoadingState } from './recoil_state';
 import './App.css';
 import { toast } from 'react-toastify';
+import "./colorpicker.css";
 
 let ffmpeg; //Store the ffmpeg instance
 function Trim() {
@@ -25,6 +27,18 @@ function Trim() {
     const [result, setResult] = useState(Object);
     const [resultVisible, setResultVisible] = useState(false)
     const [startLoading, setStartLoading] = useRecoilState(startLoadingState);
+    const [trimlen, setTrimLen] = useState(15);
+    const [isCollapsed, setIsCollapsed] = useState(true);
+
+    const handleCollapClick = () => {
+        setIsCollapsed(!isCollapsed);
+    };
+
+    const onChange = (event) => {
+        if (Number(event.target.value) > 15) { return } else {
+            setTrimLen(Number(event.target.value));
+        }
+    };
 
     const videoRef = useRef();
     let initialSliderValue = 0;
@@ -32,6 +46,7 @@ function Trim() {
     const handleuploadClick = () => {
         const fileUploadInput = document.getElementById('file-upload');
         fileUploadInput.click();
+
         setStartLoading(true);
     };
 
@@ -60,12 +75,10 @@ function Trim() {
     //Handle Upload of the video
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
-        console.log(file)
         const blobURL = URL.createObjectURL(file);
-        console.log(blobURL)
         setVideoFileValue(file);
-        console.log(videoFileValue)
         setVideoSrc(blobURL);
+        toast.success('The video was loaded successfully');
         setPlayerVisible(true);
     };
     useEffect(() => {
@@ -122,7 +135,8 @@ function Trim() {
             const currentVideo = videoRef.current;
             currentVideo.onloadedmetadata = () => {
                 setVideoDuration(currentVideo.duration);
-                setEndTime(currentVideo.duration);
+                // setEndTime(currentVideo.duration);
+                setEndTime(trimlen);
             };
         }
     }, [videoSrc]);
@@ -149,6 +163,9 @@ function Trim() {
             }
         }
     };
+    useEffect(() => {
+        setEndTime(startTime + trimlen);
+    }, [trimlen, startTime]);
 
     //Play the video when the button is clicked
     const handlePlay = () => {
@@ -168,82 +185,87 @@ function Trim() {
 
     //Trim functionality of the video
     const handleTrim = async () => {
-        if (isScriptLoaded) {
-            const { name, type } = videoFileValue;
-            console.log("here---", videoFileValue)
-            setStartLoading(false);
-            //Write video to memory
-            ffmpeg.FS(
-                'writeFile',
-                name,
-                await window.FFmpeg.fetchFile(videoFileValue),
-            );
-            const videoFileType = type.split('/')[1];
-            //Run the ffmpeg command to trim video
-            await ffmpeg.run(
-                '-i',
-                name,
-                '-ss',
-                `${convertToHHMMSS(startTime)}`,
-                '-to',
-                `${convertToHHMMSS(endTime)}`,
-                '-acodec',
-                'copy',
-                '-vcodec',
-                'copy',
-                `out.${videoFileType}`,
-            );
+        if (trimlen < 5) {
+            toast.warn("Trim length must be greater than 5");
+        } else {
+            if (isScriptLoaded) {
+                const { name, type } = videoFileValue;
+                console.log("here---", videoFileValue)
+                setStartLoading(false);
+                //Write video to memory
+                ffmpeg.FS(
+                    'writeFile',
+                    name,
+                    await window.FFmpeg.fetchFile(videoFileValue),
+                );
+                const videoFileType = type.split('/')[1];
+                //Run the ffmpeg command to trim video
+                await ffmpeg.run(
+                    '-i',
+                    name,
+                    '-ss',
+                    `${convertToHHMMSS(startTime)}`,
+                    '-to',
+                    `${convertToHHMMSS(endTime)}`,
+                    '-acodec',
+                    'copy',
+                    '-vcodec',
+                    'copy',
+                    `out.${videoFileType}`,
+                );
 
-            //Run the ffmpeg command to extract audio
-            // await ffmpeg.run("-i", `out.${videoFileType}`, "-vn", "-acodec", "copy", "out.aac");
-            await ffmpeg.run("-i", `out.${videoFileType}`, "-q:a", "0", "-map", "a", "out.mp3");
+                //Run the ffmpeg command to extract audio
+                // await ffmpeg.run("-i", `out.${videoFileType}`, "-vn", "-acodec", "copy", "out.aac");
+                await ffmpeg.run("-i", `out.${videoFileType}`, "-q:a", "0", "-map", "a", "out.mp3");
 
-            //Convert data to url and store in videoTrimmedUrl state
-            // const data = ffmpeg.FS('readFile', `out.${videoFileType}`);
+                //Convert data to url and store in videoTrimmedUrl state
+                // const data = ffmpeg.FS('readFile', `out.${videoFileType}`);
 
-            const audio = ffmpeg.FS("readFile", "out.mp3");
+                const audio = ffmpeg.FS("readFile", "out.mp3");
 
-            // const url = URL.createObjectURL(
-            //     new Blob([data.buffer], { type: videoFileValue.type }),
-            // );
+                // const url = URL.createObjectURL(
+                //     new Blob([data.buffer], { type: videoFileValue.type }),
+                // );
 
-            const blobUrl = URL.createObjectURL(
-                new Blob([audio.buffer], { type: "audio/mpeg" })
-            );
+                const blobUrl = URL.createObjectURL(
+                    new Blob([audio.buffer], { type: "audio/mpeg" })
+                );
 
-            // saveAs(new Blob([audio.buffer], { type: "audio/mpeg" }), `trimmed_audio.wav`);
-            // setVideoTrimmedUrl(url);
-            setaudioTrimmedUrl(blobUrl)
+                // saveAs(new Blob([audio.buffer], { type: "audio/mpeg" }), `trimmed_audio.wav`);
+                // setVideoTrimmedUrl(url);
+                setaudioTrimmedUrl(blobUrl)
 
 
-            const audioFile = new File([audio], 'output.mp3')
-            const formData = new FormData();
-            formData.append(
-                "myFile",
-                audioFile,
-                audioFile.name
-            );
-            setLoading(true);
-            axios.post("https://api.waitwhatsong.com/upload", formData)
-                .then(response => {
-                    console.log(response.data);
-                    if (response.data == '') {
-                        toast.info("Sorry, I don't know this one.")
-                    } else {
-                        console.log(response.data)
-                        setResult(response.data);
-                        setResultVisible(true);
-                    };
-                    setLoading(false);
+                const audioFile = new File([audio], 'output.mp3')
+                const formData = new FormData();
+                formData.append(
+                    "myFile",
+                    audioFile,
+                    audioFile.name
+                );
+                setLoading(true);
+                axios.post("https://api.waitwhatsong.com/upload", formData)
+                    .then(response => {
+                        console.log(response.data);
+                        if (response.data == '') {
+                            toast.info("Sorry, I don't know this one.")
+                        } else {
+                            setResult(response.data);
+                            setResultVisible(true);
+                        };
+                        setLoading(false);
 
-                })
-                .catch(error => {
-                    console.log(error);
-                    setLoading(false);
-                });
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        setLoading(false);
+                    });
 
+
+            }
 
         }
+
     };
 
     return (
@@ -255,32 +277,55 @@ function Trim() {
                 <input id="file-upload" type="file" accept="video/*" style={{ display: 'none' }} onChange={handleFileUpload} />
             </button>
             )}
-            
+
             {videoSrc.length ? (
                 <div className='flex-col'>
                     <p className='text-white text-center font-roboto text-base font-medium leading-normal p-4 pb-10'>Please select up to 15 seconds of the video so we can identify it for you!</p>
-                
+
                     <div className='flex flex-col items-center'>
                         <video className='md:w-[640px] w-5/6' src={videoSrc} ref={videoRef} onTimeUpdate={handlePauseVideo}>
                             <source src={videoSrc} type={videoFileValue.type} />
                         </video>
                         <br />
+                        {/* <div class="slider-styled" id="slider-round"> 
+
+                            <Nouislider
+                                className='md:w-[640px] w-5/6 '
+                                style={{height:'14px'}}
+                                behaviour="tap-drag"
+                                step={1}
+                                margin={5}
+                                limit={15}
+                                range={{ min: 0, max: videoDuration || 2 }}
+                                start={[0, videoDuration || 2]}
+                                connect
+                                onUpdate={updateOnSliderChange}
+                            />
+                         </div> */}
                         <Nouislider
                             className='md:w-[640px] w-5/6'
                             behaviour="tap-drag"
                             step={1}
-                            margin={5}
-                            limit={15}
-                            range={{ min: 0, max: videoDuration || 2 }}
-                            start={[0, videoDuration || 2]}
+
+                            range={{ min: 0, max: videoDuration - trimlen || 2 }}
+                            start={[0]}
                             connect
                             onUpdate={updateOnSliderChange}
                         />
 
-                        <p className='text-white text-center font-roboto text-base font-medium leading-normal pt-3'>
-                            Start duration: {convertToHHMMSS(startTime)} &nbsp; End duration:{' '}
-                            {convertToHHMMSS(endTime)}
-                        </p>
+                        <div className="flex flex-col space-x-4 mt-4 items-center">
+                            <div className="flex flex-row">
+                                <p className='text-white text-center font-roboto text-base font-medium leading-normal mt-[4.5px] mr-3'>Trim length</p>
+                                <input className="border rounded" type="number" min="5" max="15" value={trimlen} onChange={onChange} />
+                            </div>
+                            <p className='text-white text-center font-roboto text-base font-medium leading-normal pt-3'>
+                                Start duration: {convertToHHMMSS(startTime)} &nbsp; End duration:{' '}
+                                {convertToHHMMSS(endTime)}
+                            </p>
+                        </div>
+
+
+
                     </div>
 
 
@@ -341,10 +386,27 @@ function Trim() {
                                     </div>
                                 </div>
                                 <div className='flex-col'>
-                                    <p className='font-roboto text-xl leading-21  text-white tracking-normal text-start'>Lyrics</p>
-                                    <div className='h-[400px] mt-7 overflow-y-auto whitespace-pre-wrap'>
-                                        <p className='font-roboto text-lg leading-21  text-white tracking-normal text-start'>{result.lyrics}</p>
+                                    <div className='md:hidden border-gray-300 rounded '>
+                                        <button
+                                            className='bg-white bg-opacity-30 rounded-lg px-4 py-1 flex gap-[15px] items-center'
+                                            onClick={handleCollapClick}
+                                        >
+                                            {isCollapsed && (
+                                            <p className='text-white text-lg leading-21 '> Show More</p>)}
+                                            {!isCollapsed && (
+                                            <p className='text-white text-lg leading-21 '> Show Less</p>)}
+                                            
+                                        </button>
+
                                     </div>
+                                    {!isCollapsed && (
+                                        <div className='md:block' id='collapse'>
+                                            <p className='font-roboto text-xl leading-21  text-white tracking-normal text-start mt-4'>Lyrics</p>
+                                            <div className='md:h-[400px] mt-7 overflow-y-auto whitespace-pre-wrap'>
+                                                <p className='font-roboto text-lg leading-21  text-white tracking-normal text-start'>{result.lyrics}</p>
+                                            </div>
+                                        </div>
+                                    )}
                                     <br />
 
                                 </div>

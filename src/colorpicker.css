@@ -1,0 +1,40 @@
+
+.slider-styled .noUi-handle {
+    box-shadow: none;
+}
+
+/* Hide markers on slider handles */
+.slider-styled .noUi-handle::before,
+.slider-styled .noUi-handle::after {
+    display: none;
+}
+.slider-styled .noUi-handle .noUi-touch-area {
+    border: 1px solid transparent;
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    width: auto;
+    height: auto;
+}
+
+/* Show a border when hovering the area the handle responds to */
+.slider-styled .noUi-handle:hover .noUi-touch-area {
+    border: 1px dashed #7f7f7f;
+}
+#slider-round {
+    height: 10px;
+}
+
+#slider-round .noUi-connect {
+    background: #c0392b;
+}
+
+#slider-round .noUi-handle {
+    height: 22px;
+    width: 22px;
+    top: -5px;
+    right: -9px; /* half the width */
+    border-radius: 9px;
+}

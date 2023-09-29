@@ -35,7 +35,8 @@ function Main() {
                     .then(response => {
 
                         const filename = response.data;
-                        setVideoSrc(`https://api.waitwhatsong.com/file/${filename}`)
+                        setVideoSrc(`https://api.waitwhatsong.com/file/${filename}`);
+                        toast.success('The video was loaded successfully');
                         console.log(videoSrc);
                         fetch(`https://api.waitwhatsong.com/file/${filename}`)
                             .then(response => response.blob()) // convert to blob
