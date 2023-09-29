@@ -11,8 +11,10 @@ import { videoSrcState, videoFileState, playerVisibleState, startLoadingState } 
 import './App.css';
 import { toast } from 'react-toastify';
 import "./colorpicker.css";
-
-let ffmpeg; //Store the ffmpeg instance
+import { fetchFile } from "@ffmpeg/ffmpeg"
+import { createFFmpeg } from "@ffmpeg/ffmpeg"
+const ffmpeg = createFFmpeg({ log: true })
+// let ffmpeg; //Store the ffmpeg instance
 function Trim() {
     const [videoDuration, setVideoDuration] = useState(0);
     const [endTime, setEndTime] = useState(0);
@@ -29,6 +31,9 @@ function Trim() {
     const [startLoading, setStartLoading] = useRecoilState(startLoadingState);
     const [trimlen, setTrimLen] = useState(15);
     const [isCollapsed, setIsCollapsed] = useState(true);
+
+    const [ffmpegLoaded, setFFmpegLoaded] = useState(false)
+
 
     const handleCollapClick = () => {
         setIsCollapsed(!isCollapsed);
@@ -51,26 +56,7 @@ function Trim() {
     };
 
 
-    //Created to load script by passing the required script and append in head tag
-    const loadScript = (src) => {
-        return new Promise((onFulfilled, _) => {
-            const script = document.createElement('script');
-            let loaded;
-            script.async = 'async';
-            script.defer = 'defer';
-            script.setAttribute('src', src);
-            script.onreadystatechange = script.onload = () => {
-                if (!loaded) {
-                    onFulfilled(script);
-                }
-                loaded = true;
-            };
-            script.onerror = function () {
-                console.log('Script failed to load');
-            };
-            document.getElementsByTagName('head')[0].appendChild(script);
-        });
-    };
+
 
     //Handle Upload of the video
     const handleFileUpload = (event) => {
@@ -114,20 +100,11 @@ function Trim() {
     };
 
     useEffect(() => {
-        //Load the ffmpeg script
-        loadScript(
-            'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js',
-        ).then(() => {
-            if (typeof window !== 'undefined') {
-                // creates a ffmpeg instance.
-                ffmpeg = window.FFmpeg.createFFmpeg({ log: true });
-                //Load ffmpeg.wasm-core script
-                ffmpeg.load();
-                //Set true that the script is loaded
-                setIsScriptLoaded(true);
-            }
-        });
-    }, []);
+        // loading ffmpeg on startup
+        ffmpeg.load().then(() => {
+            setFFmpegLoaded(true)
+        })
+    }, [])
 
     //Get the duration of the video using videoRef
     useEffect(() => {
@@ -188,7 +165,7 @@ function Trim() {
         if (trimlen < 5) {
             toast.warn("Trim length must be greater than 5");
         } else {
-            if (isScriptLoaded) {
+            if (ffmpegLoaded) {
                 const { name, type } = videoFileValue;
                 console.log("here---", videoFileValue)
                 setStartLoading(false);
@@ -196,7 +173,7 @@ function Trim() {
                 ffmpeg.FS(
                     'writeFile',
                     name,
-                    await window.FFmpeg.fetchFile(videoFileValue),
+                    await fetchFile(videoFileValue),
                 );
                 const videoFileType = type.split('/')[1];
                 //Run the ffmpeg command to trim video
@@ -392,14 +369,14 @@ function Trim() {
                                             onClick={handleCollapClick}
                                         >
                                             {isCollapsed && (
-                                            <p className='text-white text-lg leading-21 '> Show More</p>)}
+                                                <p className='text-white text-lg leading-21 '> Show More</p>)}
                                             {!isCollapsed && (
-                                            <p className='text-white text-lg leading-21 '> Show Less</p>)}
-                                            
+                                                <p className='text-white text-lg leading-21 '> Show Less</p>)}
+
                                         </button>
 
                                     </div>
-                                    {!isCollapsed && (
+                                    {isCollapsed && (
                                         <div className='md:block' id='collapse'>
                                             <p className='font-roboto text-xl leading-21  text-white tracking-normal text-start mt-4'>Lyrics</p>
                                             <div className='md:h-[400px] mt-7 overflow-y-auto whitespace-pre-wrap'>
