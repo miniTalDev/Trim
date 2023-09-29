@@ -10,6 +10,9 @@ import 'nouislider/distribute/nouislider.css';
 import axios from 'axios';
 import { Player } from "video-react";
 import { videoSrcState, videoFileState, playerVisibleState, startLoadingState } from './recoil_state';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from 'react-toastify';
 
 function Main() {
     const [videourl, setVideoURL] = useState('');
@@ -24,7 +27,7 @@ function Main() {
         console.log(videourl)
         const p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=)?)([\w\-]{10,12}).+$/;
         if (videourl === '') {
-            alert('Input field is empty');
+            toast.warn('Input field is empty');
         } else {
             // Handle the url
             if (videourl.match(p)) {
@@ -40,6 +43,7 @@ function Main() {
                                 // create a new File instance
                                 const file = new File([blob], 'filename', { type: blob.type });
                                 setVideoFileValue(file);
+                                setPlayerVisible(true); // Hide the player
                                 setStartLoading(true);
                                 console.log(file);
                             })
@@ -47,21 +51,12 @@ function Main() {
                     })
                     .catch(error => {
                         console.log(error);
-                        alert('Enter the link correctly');
                     });
 
             } else {
-                axios.get(`https://api.waitwhatsong.com/download-tiktok-video?url=${videourl}`)
-                    .then(response => {
-                        console.log(response.data);
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
+                toast.warn('Please check the link');       
             }
-        }
-
-        setPlayerVisible(true); // Hide the player
+        }   
 
     }
 
@@ -90,8 +85,10 @@ function Main() {
     };
 
     return (
+        
         <div className='flex flex-col'>
             {/* Header part */}
+            <ToastContainer />
             <div className="bg-white px-14 py-4 h-20 w-full flex justify-between border">
                 <Logo width={42} height={46} fill={"#1DA1F2"} />
                 <button className='bg-blue-500 rounded-lg px-4 py-3 flex gap-[15px] items-center'>
@@ -109,7 +106,7 @@ function Main() {
                     <div className="text-white font-roboto text-lg font-medium leading-normal ">Back</div>
                 </button>)}
                 <div>
-                    <p className='text-white text-center font-roboto text-4xl font-bold p-4 pt-24'>Discover the Song Behind Your Favorite Videos</p>
+                    <p className='text-white text-center font-roboto text-4xl font-bold p-4 pt-24'>Discover the Song Behind Your Favorite Youtube Videos</p>
                 </div>
                 <p className='text-white text-center font-roboto text-base font-medium leading-normal p-4 pt-[39px]'>Unveil the Mystery - Input an Youtube Link and Find Out the Song Title!</p>
                 <div className="flex md:flex-row flex-col gap-[18px] pt-[39px] justify-center">
@@ -163,7 +160,7 @@ function Main() {
                     <div className='pl-6 md:pl-20 pt-6 md:pt-10'>
                         <Logo width={64} height={71} fill={"#1DA1F2"} />
                     </div>
-                    <p className='pl-6 md:pl-20 pt-3 md:pt-5 text-gray-600 font-roboto text-sm md:text-base font-normal leading-5'>Discover the Song Behind Your Favorite Videos</p>
+                    <p className='pl-6 md:pl-20 pt-3 md:pt-5 text-gray-600 font-roboto text-sm md:text-base font-normal leading-5'>Discover the Song Behind Your Favorite Youtube Videos</p>
                 </div>
                 <div className='md:w-1/2 w-full flex flex-col md:flex-row'>
                     <div className='w-full md:w-1/4 pl-6 md:pl-20 pt-6 md:pt-14'>
@@ -173,7 +170,7 @@ function Main() {
                     <div className='w-full md:w-3/4 pl-6 md:pl-40 pt-6 md:pt-14'>
                         <p className='text-gray-600 font-roboto text-sm md:text-base font-semibold leading-5 capitalize'>Resources</p>
                         <p className='pt-1 text-gray-700 font-roboto text-sm md:text-base font-normal leading-5 opacity-60'>Privacy Policy</p>
-                        <p className='pt-1 text-gray-700 font-roboto text-sm md:text-base font-normal leading-5 opacity-60'>Terms and Condition</p>
+                        <p className='pt-1 text-gray-700 font-roboto text-sm md:text-base font-normal leading-5 opacity-60'>Terms and Conditions</p>
                     </div>
                 </div>
             </div>

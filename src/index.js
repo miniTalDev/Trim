@@ -7,10 +7,13 @@ import Main from './main';
 import './output.css';
 import * as serviceWorker from './serviceWorker';
 
+
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
-      <Main />
+      {/*  */}
+        <Main />
+      {/* </ToastContainer> */}
     </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
