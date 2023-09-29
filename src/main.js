@@ -9,7 +9,7 @@ import Nouislider from 'nouislider-react';
 import 'nouislider/distribute/nouislider.css';
 import axios from 'axios';
 import { Player } from "video-react";
-import { videoSrcState, videoFileState, playerVisibleState } from './recoil_state';
+import { videoSrcState, videoFileState, playerVisibleState, startLoadingState } from './recoil_state';
 
 function Main() {
     const [videourl, setVideoURL] = useState('');
@@ -17,6 +17,7 @@ function Main() {
     // const [videoSrc, setVideoSrc] = useState('');
     const [videoFileValue, setVideoFileValue] = useRecoilState(videoFileState);
     const [isPlayerVisible, setPlayerVisible] = useRecoilState(playerVisibleState);
+    const [startLoading, setStartLoading] = useRecoilState(startLoadingState);
 
     const handleClick = async () => {
         setVideoSrc('');
@@ -39,6 +40,7 @@ function Main() {
                                 // create a new File instance
                                 const file = new File([blob], 'filename', { type: blob.type });
                                 setVideoFileValue(file);
+                                setStartLoading(true);
                                 console.log(file);
                             })
                             .catch(error => console.error(error));
@@ -152,7 +154,7 @@ function Main() {
                         <p className='text-white text-center font-roboto text-base font-medium leading-5'>Trim and Find Music</p>
                     </button>
                     )} */}
-                    <Trim />
+                    <Trim  />
                 </div>
             </div>
             {/* Contact part */}

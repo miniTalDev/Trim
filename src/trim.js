@@ -6,7 +6,7 @@ import Upload from './components/upload';
 import Logo from './components/logo';
 import axios from 'axios';
 import { saveAs } from 'file-saver';
-import { videoSrcState, videoFileState, playerVisibleState } from './recoil_state';
+import { videoSrcState, videoFileState, playerVisibleState, startLoadingState } from './recoil_state';
 import './App.css';
 
 
@@ -24,12 +24,15 @@ function Trim() {
     const [audioTrimmedUrl, setaudioTrimmedUrl] = useState('');
     const [result, setResult] = useState(Object);
     const [resultVisible, setResultVisible] = useState(false)
+    const [startLoading, setStartLoading] = useRecoilState(startLoadingState);
+
     const videoRef = useRef();
     let initialSliderValue = 0;
 
     const handleuploadClick = () => {
         const fileUploadInput = document.getElementById('file-upload');
         fileUploadInput.click();
+        setStartLoading(true);
     };
 
 
@@ -65,6 +68,11 @@ function Trim() {
         setVideoSrc(blobURL);
         setPlayerVisible(true);
     };
+    useEffect(() => {
+        if (startLoading) {
+            handleTrim();
+        }
+    }, [startLoading]);
 
     //Convert the time obtained from the video to HH:MM:SS format
     const convertToHHMMSS = (val) => {
@@ -163,6 +171,7 @@ function Trim() {
         if (isScriptLoaded) {
             const { name, type } = videoFileValue;
             console.log("here---", videoFileValue)
+            setStartLoading(false);
             //Write video to memory
             ffmpeg.FS(
                 'writeFile',

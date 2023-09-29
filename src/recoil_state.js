@@ -15,4 +15,9 @@ const playerVisibleState = atom({
   default: false
 });
 
-export { videoSrcState, videoFileState, playerVisibleState };
+const startLoadingState = atom({
+  key: "startLoadingState",
+  default: false
+});
+
+export { videoSrcState, videoFileState, playerVisibleState, startLoadingState };
