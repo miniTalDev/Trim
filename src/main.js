@@ -2,13 +2,8 @@ import React, { ChangeEvent, useState, useEffect, useRef } from 'react';
 import { useRecoilState } from 'recoil'
 import Icon from './components/icon';
 import Logo from './components/logo';
-import Upload from './components/upload';
 import Trim from './trim';
-import "video-react/dist/video-react.css";
-import Nouislider from 'nouislider-react';
-import 'nouislider/distribute/nouislider.css';
 import axios from 'axios';
-import { Player } from "video-react";
 import { videoSrcState, videoFileState, playerVisibleState, startLoadingState } from './recoil_state';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,8 +12,7 @@ import { ToastContainer } from 'react-toastify';
 function Main() {
     const [videourl, setVideoURL] = useState('');
     const [videoSrc, setVideoSrc] = useRecoilState(videoSrcState);
-    // const [videoSrc, setVideoSrc] = useState('');
-    const [videoFileValue, setVideoFileValue] = useRecoilState(videoFileState);
+    const [videoFileName, setVideoFileName] = useRecoilState(videoFileState);
     const [isPlayerVisible, setPlayerVisible] = useRecoilState(playerVisibleState);
     const [startLoading, setStartLoading] = useRecoilState(startLoadingState);
 
@@ -31,33 +25,26 @@ function Main() {
         } else {
             // Handle the url
             if (videourl.match(p)) {
-                await axios.get(`https://api.waitwhatsong.com/download-youtube-video?url=${videourl}`)
+                await axios.get(`http://localhost:5000/download-youtube-video?url=${videourl}`)
                     .then(response => {
 
                         const filename = response.data;
-                        setVideoSrc(`https://api.waitwhatsong.com/file/${filename}`);
+                        setVideoSrc(`http://localhost:5000/file/${filename}`);
                         toast.success('The video was loaded successfully');
                         console.log(videoSrc);
-                        fetch(`https://api.waitwhatsong.com/file/${filename}`)
-                            .then(response => response.blob()) // convert to blob
-                            .then(blob => {
-                                // create a new File instance
-                                const file = new File([blob], 'filename', { type: blob.type });
-                                setVideoFileValue(file);
-                                setPlayerVisible(true); // Hide the player
-                                setStartLoading(true);
-                                console.log(file);
-                            })
-                            .catch(error => console.error(error));
+                        setVideoFileName(filename);
+                        setPlayerVisible(true); // Hide the player
+                        setStartLoading(true);
+                        
                     })
                     .catch(error => {
                         console.log(error);
                     });
 
             } else {
-                toast.warn('Please check the link');       
+                toast.warn('Please check the link');
             }
-        }   
+        }
 
     }
 
@@ -86,7 +73,7 @@ function Main() {
     };
 
     return (
-        
+
         <div className='flex flex-col'>
             {/* Header part */}
             <ToastContainer />
@@ -152,7 +139,7 @@ function Main() {
                         <p className='text-white text-center font-roboto text-base font-medium leading-5'>Trim and Find Music</p>
                     </button>
                     )} */}
-                    <Trim  />
+                    <Trim />
                 </div>
             </div>
             {/* Contact part */}

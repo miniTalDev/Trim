@@ -11,9 +11,7 @@ import * as serviceWorker from './serviceWorker';
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
-      {/*  */}
         <Main />
-      {/* </ToastContainer> */}
     </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
