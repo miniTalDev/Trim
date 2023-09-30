@@ -25,11 +25,11 @@ function Main() {
         } else {
             // Handle the url
             if (videourl.match(p)) {
-                await axios.get(`http://localhost:5000/download-youtube-video?url=${videourl}`)
+                await axios.get(`https://api.waitwhatsong.com/download-youtube-video?url=${videourl}`)
                     .then(response => {
 
                         const filename = response.data;
-                        setVideoSrc(`http://localhost:5000/file/${filename}`);
+                        setVideoSrc(`https://api.waitwhatsong.com/file/${filename}`);
                         toast.success('The video was loaded successfully');
                         console.log(videoSrc);
                         setVideoFileName(filename);

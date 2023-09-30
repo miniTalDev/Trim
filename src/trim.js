@@ -85,7 +85,7 @@ function Trim() {
         );
         console.log(formData);
         setLoading(true);
-        axios.post("http://localhost:5000/upload", formData).then(response => {
+        axios.post("https://api.waitwhatsong.com/upload", formData).then(response => {
             console.log(response.data);
             setStartLoading(true)
         }).catch(error => {
@@ -192,9 +192,9 @@ function Trim() {
             try {
                 setLoading(true);
                 setStartLoading(false);
-                const response = await axios.post('http://localhost:5000/trim', { name, string1, string2 });
+                const response = await axios.post('https://api.waitwhatsong.com/trim', { name, string1, string2 });
                 console.log(response.data); // Handle the response from the backend
-                setaudioTrimmedUrl(`http://localhost:5000/file/out.mp3`);
+                setaudioTrimmedUrl(`https://api.waitwhatsong.com/file/out.mp3`);
                 if (response.data == '') {
                     toast.info("Sorry, I don't know this one.");
                 } else if (response.data == 'Again') {
