@@ -295,7 +295,7 @@ function Trim() {
                         <video className='md:w-[640px] sm:w-full' controls>
                             <source src={videoTrimmedUrl} type={videoFileValue.type} />
                         </video>
-                    )} */}
+                    )} 
                     <br />
                     <div className='flex flex-col items-center'>
 
@@ -305,7 +305,7 @@ function Trim() {
                             </audio>
 
                         )}
-                    </div>
+                    </div>*/}
                     {loading ? (
                         <div className='flex flex-col items-center mt-10'>
                             <button disabled type="button" className="py-2.5 px-5 mr-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 inline-flex items-center">
