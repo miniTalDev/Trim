@@ -30,7 +30,7 @@ function Trim() {
     const [resultVisible, setResultVisible] = useState(false)
     const [startLoading, setStartLoading] = useRecoilState(startLoadingState);
     const [trimlen, setTrimLen] = useState(15);
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(true);
 
 
     const handleCollapClick = () => {
@@ -39,7 +39,10 @@ function Trim() {
 
     useEffect(() => {
         const handleResize = () => {
-          setIsCollapsed(window.innerWidth < 768); // Adjust the breakpoint as needed
+            if(window.innerWidth > 768){
+                setIsCollapsed(false); 
+            }
+          
         };
     
         window.addEventListener('resize', handleResize);
