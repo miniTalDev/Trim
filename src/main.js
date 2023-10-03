@@ -4,6 +4,7 @@ import Icon from './components/icon';
 import Logo from './components/logo';
 import Trim from './trim';
 import axios from 'axios';
+import logo from './components/Logo.png'; 
 import { videoSrcState, videoFileState, playerVisibleState, startLoadingState } from './recoil_state';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -35,7 +36,7 @@ function Main() {
                         setVideoFileName(filename);
                         setPlayerVisible(true); // Hide the player
                         setStartLoading(true);
-                        
+
                     })
                     .catch(error => {
                         console.log(error);
@@ -50,7 +51,6 @@ function Main() {
 
     const handleBackClick = () => {
         setVideoURL('');
-        localStorage.clear();
         setPlayerVisible(false); // Show the player
         setVideoSrc('');
     }
@@ -71,6 +71,9 @@ function Main() {
             setPlayerVisible(true);
         }
     };
+    const LogoClick = () => {
+        window.location.reload();
+    }
 
     return (
 
@@ -78,7 +81,11 @@ function Main() {
             {/* Header part */}
             <ToastContainer />
             <div className="bg-white px-14 py-4 h-20 w-full flex justify-between border">
-                <Logo width={42} height={46} fill={"#1DA1F2"} />
+                {/* <Logo width={42} height={46} fill={"#1DA1F2"} /> */}
+                
+                <button  onClick={LogoClick}><img src={logo} alt="Logo" style={{ width: '120px', height: '50px' }} />
+                    </button>
+                
                 <button className='bg-blue-500 rounded-lg px-4 py-3 flex gap-[15px] items-center'>
                     <p className='text-white text-sm'>English</p>
                     <Icon />
